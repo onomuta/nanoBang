@@ -1,16 +1,17 @@
 import themidibus.*;
 MidiBus myBus; // The MidiBus
-
 import codeanticode.syphon.*;
 SyphonServer server;
-
 import controlP5.*;
-ControlP5 btn;
-
-boolean btn1 = false;  
+ControlP5 cp5;
 
 PGraphics canvas;
 PImage bg;
+PShader sd1, sd2, sd3, sd4, sd5, sd6, sd7, sd8;
+
+float time = 0;  //  カウンター
+
+boolean btn1 = false;  
 
 int drawFlag = 0;
 int slotNo = 0;
@@ -19,63 +20,81 @@ int drawFrame = 0;
 
 boolean previewMode = false;
 void setup() { 
-  bg = loadImage("bg.png");
-  MidiBus.list();
-  myBus = new MidiBus(this, 0, -1); 
-  
   size(800,200, P3D);
   canvas = createGraphics(1280, 720, P3D);
-  frameRate(60);
-  //smooth();
-  
-  // Create syhpon server to send frames out.
+  MidiBus.list();
+  myBus = new MidiBus(this, 0, -1); 
   server = new SyphonServer(this, "Processing Syphon - nanoBang");
-  
+
+  // import shader file
+  sd1 = loadShader("shader/sketch1.glsl");
+  sd2 = loadShader("shader/sketch2.glsl");
+  sd3 = loadShader("shader/sketch3.glsl");
+  sd4 = loadShader("shader/sketch4.glsl");
+  sd5 = loadShader("shader/sketch5.glsl");
+  sd6 = loadShader("shader/sketch6.glsl");
+  sd7 = loadShader("shader/sketch7.glsl");
+  sd8 = loadShader("shader/sketch8.glsl");
+
   ///GUI
-  btn = new ControlP5(this);
-  btn.addButton("btn1", 0, 100, 100, 200, 19);
-  
+  bg = loadImage("bg.png");
+  cp5 = new ControlP5(this);
+  for (int i=1;i<=8;i++) {
+    cp5.addBang("btn"+i)
+       .setPosition(170+i*80 - 80, 150)
+       .setSize(40, 40)
+       .setId(i)
+       ;
+  }
 }
 
 void draw() {
-  
-    drawFrame = frameCount - startFrame;
-    background(150);
-    image(bg, 0, 0);
-    canvas.beginDraw();
-    canvas.clear();
-    canvas.translate(canvas.width/2, canvas.height/2);
-      
-    if(drawFlag != 0){
-        if(slotNo == 0 ){
-          canvas.box(50);
-        }else if(slotNo == 1 ){
-          canvas.box(150);
-        }else if(slotNo == 2 ){
-          canvas.box(250);
-        }else if(slotNo == 3 ){
-          canvas.box(350);
-        }else if(slotNo == 4 ){
-          canvas.rect(100,drawFrame,100,100);
-        }else if(slotNo == 5 ){
-          canvas.rect(100,100,100,100);
-        }else if(slotNo == 6 ){
-          canvas.box(650);
-        }else if(slotNo == 7 ){
-          canvas.box(750);
-        }
+  time =(float)frameCount/60.0;
+
+  drawFrame = frameCount - startFrame;
+  background(150);
+  image(bg, 0, 0);
+  canvas.beginDraw();
+  canvas.clear();
+  if(drawFlag != 0){
+    if(slotNo == 1 ){
+      sd1.set("time", time);
+      canvas.shader(sd1);
+    }else if(slotNo == 2 ){
+      sd2.set("time", time);
+      sd2.set("resolution", float(canvas.width), float(canvas.height));
+      canvas.shader(sd2);
+    }else if(slotNo == 3 ){
+      sd3.set("time", time);
+      canvas.shader(sd3);
+    }else if(slotNo == 4 ){
+      sd4.set("time", time);
+      canvas.shader(sd4);
+    }else if(slotNo == 5 ){
+      sd5.set("time", time);
+      canvas.shader(sd5);
+    }else if(slotNo == 6 ){
+      sd6.set("time", time);
+      canvas.shader(sd6);
+    }else if(slotNo == 7 ){
+      sd7.set("time", time);
+      canvas.shader(sd7);
+    }else if(slotNo == 8 ){
+      sd8.set("time", time);
+      canvas.shader(sd8);
     }
-    canvas.endDraw();
-  
-    // プレビューモード
-    if(previewMode != true){
-      server.sendImage(canvas);
-    }
-    // プレビュー描画
-    image(canvas, 10,10, 150, 84.375);
-  
-    //println(frameRate);
-    //println(getState("btn1") );
+    canvas.rect(0, 0, canvas.width, canvas.height);
+  }
+  canvas.endDraw();
+
+  // プレビューモード
+  if(previewMode != true){
+    server.sendImage(canvas);
+  }
+  // プレビュー描画
+  image(canvas, 10,10, 150, 84.375);
+
+  text(frameRate, 10, 120);
 }
 
 
@@ -87,7 +106,6 @@ void controllerChange(int channel, int number, int value) {
   println("Channel:"+channel);
   println("Number:"+number);
   println("Value:"+value);
-  
   
   if(drawFlag == 0){
     if(value == 0){
@@ -101,24 +119,23 @@ void controllerChange(int channel, int number, int value) {
     }
   }
  
-  
   // xxxx ////////////////////////
   if        (number == 64) { 
-    slotSelect(0);
-  } else if (number == 65) { 
     slotSelect(1);
-  } else if (number == 66) { 
+  } else if (number == 65) { 
     slotSelect(2);
-  } else if (number == 67) { 
+  } else if (number == 66) { 
     slotSelect(3);
-  } else if (number == 68) { 
+  } else if (number == 67) { 
     slotSelect(4);
-  } else if (number == 69) { 
+  } else if (number == 68) { 
     slotSelect(5);
-  } else if (number == 70) { 
+  } else if (number == 69) { 
     slotSelect(6);
-  } else if (number == 71) { 
+  } else if (number == 70) { 
     slotSelect(7);
+  } else if (number == 71) { 
+    slotSelect(8);
   }
 }
 
@@ -126,16 +143,16 @@ void slotSelect(int n){
   slotNo = n;
 }
 
+public void controlEvent(ControlEvent theEvent) {
+  println(theEvent);
+  for (int i=1;i<=8;i++) {
+    if (theEvent.getController().getName().equals("btn"+i)) {
+      slotSelect(i);
+      drawFlag = 1;
+    }
+  }
+}
 
-//void colorA(int theValue) {
-//  println("a button event from colorA: "+theValue);
-//}
-
-void btn1(boolean value){
-  //if(value){
-  //  println(1);
-  //} else {
-  //  println(0);  
-  //}
-  println(value);
+void mouseReleased(){
+  drawFlag = 0;
 }
