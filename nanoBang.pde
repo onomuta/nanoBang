@@ -14,6 +14,8 @@ int drawFlag = 0;
 int slotNo = 0;
 int startFrame = 0;
 int drawFrame = 0;
+
+boolean previewMode = false;
 void setup() { 
   bg = loadImage("bg.png");
   MidiBus.list();
@@ -25,8 +27,7 @@ void setup() {
   //smooth();
   
   // Create syhpon server to send frames out.
-  server = new SyphonServer(this, "Processing Syphon");
-  
+  server = new SyphonServer(this, "Processing Syphon - nanoBang");
   
   ///GUI
   //btn.addButton("colorA", 0, 100, 100, 200, 19);
@@ -36,7 +37,7 @@ void setup() {
 void draw() {
   
   drawFrame = frameCount - startFrame;
-  background(0,0,0);
+  background(150);
   image(bg, 0, 0);
   canvas.beginDraw();
   canvas.clear();
@@ -72,8 +73,15 @@ void draw() {
     }
   }
   canvas.endDraw();
-  image(canvas, 0, 0, 320, 180);
-  server.sendImage(canvas);
+  
+
+  // プレビューモード
+  if(previewMode != true){
+    server.sendImage(canvas);
+  }
+  // プレビュー描画
+  image(canvas, 10,10, 150, 84.375);
+
   println(frameRate);
 }
 
@@ -102,7 +110,7 @@ void controllerChange(int channel, int number, int value) {
  
   
   // xxxx ////////////////////////
-  if           (number == 64) { 
+  if        (number == 64) { 
     slotSelect(0);
   } else if (number == 65) { 
     slotSelect(1);
