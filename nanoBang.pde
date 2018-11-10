@@ -7,6 +7,8 @@ SyphonServer server;
 import controlP5.*;
 ControlP5 btn;
 
+boolean btn1 = false;  
+
 PGraphics canvas;
 PImage bg;
 
@@ -30,59 +32,50 @@ void setup() {
   server = new SyphonServer(this, "Processing Syphon - nanoBang");
   
   ///GUI
-  //btn.addButton("colorA", 0, 100, 100, 200, 19);
+  btn = new ControlP5(this);
+  btn.addButton("btn1", 0, 100, 100, 200, 19);
   
 }
 
 void draw() {
   
-  drawFrame = frameCount - startFrame;
-  background(150);
-  image(bg, 0, 0);
-  canvas.beginDraw();
-  canvas.clear();
-   if (mousePressed == true) {
-    canvas.background(255,0,0);
-  } else {
-    fill(255);
-  }
-  //canvas.background(127);
-  //canvas.lights();
-  canvas.translate(canvas.width/2, canvas.height/2);
-  //canvas.rotateX(frameCount * 0.1);
-  //canvas.rotateY(frameCount * 0.01);  
-  
-  
-  if(drawFlag != 0){
-    if(slotNo == 0 ){
-      canvas.box(50);
-    }else if(slotNo == 1 ){
-      canvas.box(150);
-    }else if(slotNo == 2 ){
-      canvas.box(250);
-    }else if(slotNo == 3 ){
-      canvas.box(350);
-    }else if(slotNo == 4 ){
-      canvas.rect(100,drawFrame,100,100);
-    }else if(slotNo == 5 ){
-      canvas.rect(100,100,100,100);
-    }else if(slotNo == 6 ){
-      canvas.box(650);
-    }else if(slotNo == 7 ){
-      canvas.box(750);
+    drawFrame = frameCount - startFrame;
+    background(150);
+    image(bg, 0, 0);
+    canvas.beginDraw();
+    canvas.clear();
+    canvas.translate(canvas.width/2, canvas.height/2);
+      
+    if(drawFlag != 0){
+        if(slotNo == 0 ){
+          canvas.box(50);
+        }else if(slotNo == 1 ){
+          canvas.box(150);
+        }else if(slotNo == 2 ){
+          canvas.box(250);
+        }else if(slotNo == 3 ){
+          canvas.box(350);
+        }else if(slotNo == 4 ){
+          canvas.rect(100,drawFrame,100,100);
+        }else if(slotNo == 5 ){
+          canvas.rect(100,100,100,100);
+        }else if(slotNo == 6 ){
+          canvas.box(650);
+        }else if(slotNo == 7 ){
+          canvas.box(750);
+        }
     }
-  }
-  canvas.endDraw();
+    canvas.endDraw();
   
-
-  // プレビューモード
-  if(previewMode != true){
-    server.sendImage(canvas);
-  }
-  // プレビュー描画
-  image(canvas, 10,10, 150, 84.375);
-
-  println(frameRate);
+    // プレビューモード
+    if(previewMode != true){
+      server.sendImage(canvas);
+    }
+    // プレビュー描画
+    image(canvas, 10,10, 150, 84.375);
+  
+    //println(frameRate);
+    //println(getState("btn1") );
 }
 
 
@@ -134,6 +127,15 @@ void slotSelect(int n){
 }
 
 
-public void colorA(int theValue) {
-  println("a button event from colorA: "+theValue);
+//void colorA(int theValue) {
+//  println("a button event from colorA: "+theValue);
+//}
+
+void btn1(boolean value){
+  //if(value){
+  //  println(1);
+  //} else {
+  //  println(0);  
+  //}
+  println(value);
 }
