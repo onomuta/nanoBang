@@ -2,7 +2,7 @@ uniform vec2 resolution;
 uniform float time;
 float circle(vec2 coord, vec2 offs)
 {
-    float reso = 16.0;
+    float reso = 8.0;
     float cw = resolution.x / reso;
 
     vec2 p = mod(coord, cw) - cw * 0.5 + offs * cw;

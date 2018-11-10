@@ -58,30 +58,21 @@ void draw() {
   canvas.clear();
   if(drawFlag != 0){
     if(slotNo == 1 ){
-      sd1.set("time", time);
-      canvas.shader(sd1);
+      setShader(sd1);
     }else if(slotNo == 2 ){
-      sd2.set("time", time);
-      sd2.set("resolution", float(canvas.width), float(canvas.height));
-      canvas.shader(sd2);
+      setShader(sd2);
     }else if(slotNo == 3 ){
-      sd3.set("time", time);
-      canvas.shader(sd3);
+      setShader(sd3);
     }else if(slotNo == 4 ){
-      sd4.set("time", time);
-      canvas.shader(sd4);
+      setShader(sd4);
     }else if(slotNo == 5 ){
-      sd5.set("time", time);
-      canvas.shader(sd5);
+      setShader(sd5);
     }else if(slotNo == 6 ){
-      sd6.set("time", time);
-      canvas.shader(sd6);
+      setShader(sd6);
     }else if(slotNo == 7 ){
-      sd7.set("time", time);
-      canvas.shader(sd7);
+      setShader(sd7);
     }else if(slotNo == 8 ){
-      sd8.set("time", time);
-      canvas.shader(sd8);
+      setShader(sd8);
     }
     canvas.rect(0, 0, canvas.width, canvas.height);
   }
@@ -155,4 +146,14 @@ public void controlEvent(ControlEvent theEvent) {
 
 void mouseReleased(){
   drawFlag = 0;
+}
+
+
+// time       : float :時間
+// resolution : vec2  :解像度 
+// baseColor  : vec3  :基本色 HSL(1,1,1)
+void setShader(PShader sd){
+  sd.set("time", time);
+  sd.set("resolution", float(canvas.width), float(canvas.height));
+  canvas.shader(sd);
 }

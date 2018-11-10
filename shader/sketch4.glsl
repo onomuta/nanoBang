@@ -1,4 +1,4 @@
-uniform int times;  //  Processingから渡ってきたカウンター
+uniform float time;  //  Processingから渡ってきたカウンター
 const float NEON_WIDTH = 50.0;
  
 void main()
@@ -6,7 +6,7 @@ void main()
   vec4 col = vec4(0, 0, 0, 1);
  
   //  正弦波（sin）を使って基準点を決める。
-  float h = sin(radians(gl_FragCoord.x + times));
+  float h = sin(radians(gl_FragCoord.x + time));
   h *= 25.0;
   h += 50;
  
