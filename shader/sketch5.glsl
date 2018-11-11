@@ -1,26 +1,43 @@
-uniform vec2 resolution;
+#ifdef GL_ES
+precision highp float;
+#endif
+
 uniform float time;
-float circle(vec2 coord, float spd)
+uniform vec2 resolution;
+uniform vec2 mouse;
+uniform vec3 spectrum;
+
+const float PI = 3.141592;
+
+void main(void)
 {
-    float reso = 12.0;
-    float cw = resolution.x / reso;
+    vec2 coord = gl_FragCoord.xy - resolution * 0.5;
 
-    vec2 p = mod(coord, cw);
-    float d = distance(p, vec2(cw / 2.0));
+    float phi = atan(coord.y, coord.x + 1e-6);
+    phi = phi / PI * 0.5 + 0.5;
+    float seg = floor(phi * 6.);
 
-    float rnd = dot(floor(coord / cw), vec2(1323.443, 1412.312));
-    float t = time * 2.0 + fract(sin(rnd)) * 6.2;
+    float theta = (seg + 0.5) / 6. * PI * 2.;
+    vec2 dir1 = vec2(cos(theta), sin(theta));
+    vec2 dir2 = vec2(-dir1.y, dir1.x);
 
-    float l = cw * (sin(t * spd) * 0.25 + 0.25);
-    return clamp(l - d, 0.0, 1.0);
-}
+    float l = dot(dir1, coord);
+    float w = sin(seg * 31.374) * 18. + 20.;
+    float prog = l / w + time * 2.;
+    float idx = floor(prog);
 
-void main()
-{
-    vec2 p = gl_FragCoord.xy;
-    vec2 dp = vec2(7.9438, 1.3335) * time;
-    float c1 = circle(p - dp, 1.0);
-    float c2 = circle(p + dp, 1.4);
-    float c = max(0.0, abs(c1 - c2));
+    float phase = time * 0.8;
+    float th1 = fract(273.84937 * sin(idx * 54.67458 + floor(phase    )));
+    float th2 = fract(273.84937 * sin(idx * 54.67458 + floor(phase + 1.)));
+    float thresh = mix(th1, th2, smoothstep(0.75, 1., fract(phase)));
+
+    float l2 = dot(dir2, coord);
+    float slide = fract(idx * 32.74853) * 200. * time;
+    float w2 = fract(idx * 39.721784) * 500.;
+    float prog2 = (l2 + slide) / w2;
+
+    float c = clamp((fract(prog) - thresh) * w * 0.3, 0., 1.);
+    c *= clamp((fract(prog2) - 1. + thresh) * w2 * 0.3, 0., 1.);
+
     gl_FragColor = vec4(c, c, c, 1);
 }

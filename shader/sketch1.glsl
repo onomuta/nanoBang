@@ -1,25 +1,27 @@
-uniform float time;  //  Processingから渡ってきたカウンター
-const float NEON_WIDTH = 50.0;
- 
-void main()
+uniform vec2 resolution;
+uniform float time;
+
+float swirl(vec2 coord)
 {
-  vec4 col = vec4(0, 0, 0, 1);
- 
-  //  正弦波（sin）を使って基準点を決める。
-  float h = sin(radians(gl_FragCoord.x + (time*100.) ));
-  h *= 100.0;
-  h += 350;
- 
-  //  cは、座標が波形の位置ぴったりであれば1.0。そこからNEON_WIDTHの範囲内であれば、距離に応じて1.0～0.0となる。
-  float t = abs(gl_FragCoord.y - h) / NEON_WIDTH;
-  float c = 1.0 - t;
- 
-  //  結果が0より大きければ、色を加算する。
-  if(c > 0.0)
-  {
-    c = pow(c, 3.0);
-    vec3 rc = vec3(c, c, c);
-    col += vec4(rc, 1);
-  }
-  gl_FragColor = vec4(col);
+    float l = length(coord) / resolution.x;
+    float phi = atan(coord.y, coord.x + 1e-6);
+    return sin(l * 10 + phi - time * 4) * 0.5 + 0.5;
+}
+
+float halftone(vec2 coord)
+{
+    coord -= resolution * 0.5;
+    float size = resolution.x / (60 + sin(time * 0.5) * 50);
+    vec2 uv = coord / size; 
+    vec2 ip = floor(uv); // column, row
+    vec2 odd = vec2(0.5 * mod(ip.y, 2), 0); // odd line offset
+    vec2 cp = floor(uv - odd) + odd; // dot center
+    float d = length(uv - cp - 0.5) * size; // distance
+    float r = swirl(cp * size) * (size - 2) * 0.5; // dot radius
+    return clamp(d - r, 0, 1);
+}
+
+void main(void)
+{
+    gl_FragColor = vec4(vec3(1, 1, 0) * halftone(gl_FragCoord.xy), 1);
 }
