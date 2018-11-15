@@ -1,5 +1,5 @@
 import themidibus.*;
-MidiBus myBus; // The MidiBus
+MidiBus myBus;
 import codeanticode.syphon.*;
 SyphonServer server;
 import controlP5.*;
@@ -57,23 +57,31 @@ void draw() {
   canvas.beginDraw();
   canvas.clear();
   if(drawFlag != 0){
-    if(slotNo == 1 ){
-      setShader(sd1);
-    }else if(slotNo == 2 ){
-      setShader(sd2);
-    }else if(slotNo == 3 ){
-      setShader(sd3);
-    }else if(slotNo == 4 ){
-      setShader(sd4);
-    }else if(slotNo == 5 ){
-      setShader(sd5);
-    }else if(slotNo == 6 ){
-      setShader(sd6);
-    }else if(slotNo == 7 ){
-      setShader(sd7);
-    }else if(slotNo == 8 ){
-      setShader(sd8);
+    switch(slotNo) {
+      case 1:
+        setShader(sd1); break;
+      case 2:
+        setShader(sd2); break;
+      case 3:
+        setShader(sd3); break;
+      case 4:
+        setShader(sd4); break;
+      case 5:
+        setShader(sd5); break;
+      case 6:
+        setShader(sd6); break;
+      case 7:
+        setShader(sd7); break;
+      case 8:
+        setShader(sd8); break;
+      case 9:
+        // setShader(sd9); break;
+      default:
+        setShader(sd1); break;
     }
+
+
+    
     canvas.rect(0, 0, canvas.width, canvas.height);
   }
   canvas.endDraw();
@@ -109,25 +117,39 @@ void controllerChange(int channel, int number, int value) {
       drawFlag = 0;
     }
   }
- 
-  // xxxx ////////////////////////
-  if        (number == 64) { 
-    slotSelect(1);
-  } else if (number == 65) { 
-    slotSelect(2);
-  } else if (number == 66) { 
-    slotSelect(3);
-  } else if (number == 67) { 
-    slotSelect(4);
-  } else if (number == 68) { 
-    slotSelect(5);
-  } else if (number == 69) { 
-    slotSelect(6);
-  } else if (number == 70) { 
-    slotSelect(7);
-  } else if (number == 71) { 
-    slotSelect(8);
+  slotSelect(number - 63);
+}
+
+// note対応
+void noteOn(int channel, int pitch, int velocity) {
+  // Receive a noteOn
+  println();
+  print("Note On:");
+  print("--------");
+  print("Channel:"+channel);
+  print("Pitch:"+pitch);
+  println("Velocity:"+velocity);
+
+  if(drawFlag == 0){
+    drawFlag = 1;
+    startFrame = frameCount;
   }
+
+  // pitch:24 = C0
+  slotSelect(pitch - 23);
+
+}
+
+void noteOff(int channel, int pitch, int velocity) {
+  // Receive a noteOff
+  println();
+  print("Note Off:");
+  print("--------");
+  print("Channel:"+channel);
+  print("Pitch:"+pitch);
+  println("Velocity:"+velocity);
+
+  drawFlag = 0;
 }
 
 void slotSelect(int n){
@@ -147,7 +169,6 @@ public void controlEvent(ControlEvent theEvent) {
 void mouseReleased(){
   drawFlag = 0;
 }
-
 
 // time       : float :時間
 // resolution : vec2  :解像度 

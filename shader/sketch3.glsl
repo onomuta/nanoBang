@@ -1,27 +1,34 @@
 uniform vec2 resolution;
 uniform float time;
-const float PI = 3.141592;
+
+float rand(vec2 uv)
+{
+    return fract(sin(dot(uv, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+vec2 uv2tri(vec2 uv)
+{
+    float sx = uv.x - uv.y / 2.; // skewed x
+    float sxf = fract(sx);
+    float offs = step(fract(1. - uv.y), sxf);
+    return vec2(floor(sx) * 2. + sxf + offs, uv.y);
+}
+
+float tri(vec2 uv)
+{
+    float sp = 1.2 + 3.3 * rand(floor(uv2tri(uv)));
+    return max(0., sin(sp * time));
+}
 
 void main(void)
 {
-    vec2 coord = gl_FragCoord.xy - resolution * 0.5;
+    vec2 uv = (gl_FragCoord.xy - resolution.xy / 2.) / resolution.y;
 
-    float phi = atan(coord.y, coord.x + 1e-6);
-    phi = phi / PI * 0.5 + 0.5;
-    float seg = floor(phi * 6);
+    float t1 = -time / 0.5;
+    float t2 = t1 + 0.5;
 
-    float theta = (seg + 0.5) / 6 * PI * 2;
-    vec2 dir = vec2(cos(theta), sin(theta));
-    float l = dot(dir, coord);
+    float c1 = tri(uv * (2. + 4. * fract(t1)) + floor(t1));
+    float c2 = tri(uv * (2. + 4. * fract(t2)) + floor(t2));
 
-    float phase = time * 1.8;
-    float w1 = sin(floor(phase    ) + seg) * 40 + 60;
-    float w2 = sin(floor(phase + 1) + seg) * 40 + 60;
-    float w = mix(w1, w2, smoothstep(0.75, 1, fract(phase)));
-
-    float prog = l / w + time * 2;
-    float thresh = fract(73.8493748 * abs(sin(floor(prog) * 4.67458347)));
-    float c = clamp((fract(prog) - thresh) * w * 0.3, 0, 1);
-
-    gl_FragColor = vec4(c, c, c, 1);
+    gl_FragColor = vec4(mix(c1, c2, abs(1. - 2. * fract(t1))));
 }

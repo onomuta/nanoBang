@@ -31,6 +31,5 @@ void main()
         float dy = float(i / 3) - 1.0;
         c += circle(gl_FragCoord.xy, vec2(dx, dy));
     }
-    
     gl_FragColor = vec4(vec3(min(1.0, c)), 1);
 }
