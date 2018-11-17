@@ -1,4 +1,5 @@
-uniform float time;  //  Processingから渡ってきたカウンター
+uniform vec2 resolution;
+uniform float time;
 const float NEON_WIDTH = 50.0;
  
 void main()
