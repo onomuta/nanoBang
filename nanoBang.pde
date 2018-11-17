@@ -2,12 +2,15 @@ import themidibus.*;
 MidiBus myBus;
 import codeanticode.syphon.*;
 SyphonServer server;
-import controlP5.*;
-ControlP5 cp5;
 
 PGraphics canvas;
+PGraphics guiCanvas;
 PImage bg;
-PShader sd1, sd2, sd3, sd4, sd5, sd6, sd7, sd8;
+PImage gui;
+
+int shaderCount = 17; //slot数
+PShader[] shaders = new PShader[shaderCount];
+PImage[] thumbnails = new PImage[shaderCount];
 
 float time = 0;  //  カウンター
 
@@ -18,70 +21,59 @@ int slotNo = 0;
 int startFrame = 0;
 int drawFrame = 0;
 
+int activeBtnX = 0;
+int activeBtnY = 0;
+
 boolean previewMode = false;
 void setup() { 
-  size(800,200, P3D);
-  canvas = createGraphics(1280, 720, P3D);
+  size(1170,100, P3D);
   MidiBus.list();
   myBus = new MidiBus(this, 0, -1); 
   server = new SyphonServer(this, "Processing Syphon - nanoBang");
-
-  // import shader file
-  sd1 = loadShader("shader/sketch1.glsl");
-  sd2 = loadShader("shader/sketch2.glsl");
-  sd3 = loadShader("shader/sketch3.glsl");
-  sd4 = loadShader("shader/sketch4.glsl");
-  sd5 = loadShader("shader/sketch5.glsl");
-  sd6 = loadShader("shader/sketch6.glsl");
-  sd7 = loadShader("shader/sketch7.glsl");
-  sd8 = loadShader("shader/sketch8.glsl");
-
-  ///GUI
   bg = loadImage("bg.png");
-  cp5 = new ControlP5(this);
-  for (int i=1;i<=8;i++) {
-    cp5.addBang("btn"+i)
-       .setPosition(170+i*80 - 80, 150)
-       .setSize(40, 40)
-       .setId(i)
-       ;
+
+
+
+  guiCanvas = createGraphics(960, 40, P3D);
+  for (int i = 0; i < shaders.length; i++) {
+    shaders[i] = loadShader("shader/sketch" + i + ".glsl");
   }
+
+  time = 123.111;
+  guiCanvas.beginDraw();
+  for (int i = 0; i < shaders.length; i++) {
+    shaders[i].set("time", 0.4321);
+    shaders[i].set("resolution", float(40), float(40));
+    guiCanvas.shader(shaders[i]);
+
+    guiCanvas.rect(i * 40, 0, 40, 40);
+  }
+  guiCanvas.endDraw();
+
+
+  canvas = createGraphics(1280, 720, P3D);
 }
 
 void draw() {
   time =(float)frameCount/60.0;
 
   drawFrame = frameCount - startFrame;
-  background(150);
+  background(0);
+
   image(bg, 0, 0);
+
+  image(guiCanvas, 160,50, 960, 40);
+
+  activeBtnDraw();
+
   canvas.beginDraw();
   canvas.clear();
   if(drawFlag != 0){
-    switch(slotNo) {
-      case 1:
-        setShader(sd1); break;
-      case 2:
-        setShader(sd2); break;
-      case 3:
-        setShader(sd3); break;
-      case 4:
-        setShader(sd4); break;
-      case 5:
-        setShader(sd5); break;
-      case 6:
-        setShader(sd6); break;
-      case 7:
-        setShader(sd7); break;
-      case 8:
-        setShader(sd8); break;
-      case 9:
-        // setShader(sd9); break;
-      default:
-        setShader(sd1); break;
+    if(slotNo < shaderCount){
+      setShader(shaders[slotNo]);
+    }else{
+      setShader(shaders[0]);
     }
-
-
-    
     canvas.rect(0, 0, canvas.width, canvas.height);
   }
   canvas.endDraw();
@@ -91,14 +83,13 @@ void draw() {
     server.sendImage(canvas);
   }
   // プレビュー描画
-  image(canvas, 10,10, 150, 84.375);
+  image(canvas, 10,10, 142.222, 80);
 
-  text(frameRate, 10, 120);
+  text(frameRate, 10, 10);
 }
 
 
 void controllerChange(int channel, int number, int value) {
-  // Receive a controllerChange
   println();
   println("Controller Change:");
   println("--------");
@@ -130,14 +121,8 @@ void noteOn(int channel, int pitch, int velocity) {
   print("Pitch:"+pitch);
   println("Velocity:"+velocity);
 
-  if(drawFlag == 0){
-    drawFlag = 1;
-    startFrame = frameCount;
-  }
-
   // pitch:24 = C0
-  slotSelect(pitch - 23);
-
+  slotSelect(pitch - 24);
 }
 
 void noteOff(int channel, int pitch, int velocity) {
@@ -153,14 +138,45 @@ void noteOff(int channel, int pitch, int velocity) {
 }
 
 void slotSelect(int n){
+  if(drawFlag == 0){
+    startFrame = frameCount;
+  }
   slotNo = n;
+  drawFlag = 1;
 }
 
-public void controlEvent(ControlEvent theEvent) {
-  println(theEvent);
-  for (int i=1;i<=8;i++) {
-    if (theEvent.getController().getName().equals("btn"+i)) {
-      slotSelect(i);
+
+void activeBtnDraw(){
+  if(drawFlag == 1){
+    fill(255,120);
+    stroke(255);
+    if(slotNo >= 0 && slotNo <= 24){
+      activeBtnX = slotNo * 40 + 160;
+      rect(activeBtnX, 50, 40,40);
+    }else if(slotNo >= 24 && slotNo <= 50){
+      activeBtnX = (slotNo-23) * 40 + 160;
+      rect(activeBtnX, 10, 40,40);
+    }
+    
+  }
+}
+
+void mousePressed(){
+  if(mouseY >50 && mouseY < 90){
+    if(mouseX >160 && mouseX < 1160){
+      slotSelect(floor((mouseX-160)/40));
+      activeBtnX = floor(mouseX/40) * 40;
+      activeBtnY = 50;
+      drawFlag = 1;
+    }
+  }
+}
+void mouseDragged() {
+  if(mouseY >50 && mouseY < 90){
+    if(mouseX >160 && mouseX < 1160){
+      slotSelect(floor((mouseX-160)/40));
+      activeBtnX = floor(mouseX/40) * 40;
+      activeBtnY = 50;
       drawFlag = 1;
     }
   }
