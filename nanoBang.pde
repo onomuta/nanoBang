@@ -8,7 +8,7 @@ PGraphics guiCanvas;
 PImage bg;
 PImage gui;
 
-int shaderCount = 17; //slot数
+int shaderCount = 22; //slot数
 PShader[] shaders = new PShader[shaderCount];
 PImage[] thumbnails = new PImage[shaderCount];
 
@@ -23,6 +23,9 @@ int drawFrame = 0;
 
 int activeBtnX = 0;
 int activeBtnY = 0;
+
+
+int lastNote = 0;
 
 boolean previewMode = false;
 void setup() { 
@@ -42,7 +45,7 @@ void setup() {
   time = 123.111;
   guiCanvas.beginDraw();
   for (int i = 0; i < shaders.length; i++) {
-    shaders[i].set("time", 0.4321);
+    shaders[i].set("time", 10.4321);
     shaders[i].set("resolution", float(40), float(40));
     guiCanvas.shader(shaders[i]);
 
@@ -97,18 +100,6 @@ void controllerChange(int channel, int number, int value) {
   println("Number:"+number);
   println("Value:"+value);
   
-  if(drawFlag == 0){
-    if(value == 0){
-    }else{
-      drawFlag = 1;
-      startFrame = frameCount;
-    }
-  }else{
-    if(value == 0){
-      drawFlag = 0;
-    }
-  }
-  slotSelect(number - 63);
 }
 
 // note対応
@@ -122,7 +113,9 @@ void noteOn(int channel, int pitch, int velocity) {
   println("Velocity:"+velocity);
 
   // pitch:24 = C0
-  slotSelect(pitch - 24);
+  slotSelect(pitch);
+
+  lastNote = pitch;
 }
 
 void noteOff(int channel, int pitch, int velocity) {
@@ -134,7 +127,9 @@ void noteOff(int channel, int pitch, int velocity) {
   print("Pitch:"+pitch);
   println("Velocity:"+velocity);
 
-  drawFlag = 0;
+  if(lastNote == pitch){
+    drawFlag = 0;
+  }
 }
 
 void slotSelect(int n){
@@ -150,11 +145,11 @@ void activeBtnDraw(){
   if(drawFlag == 1){
     fill(255,120);
     stroke(255);
-    if(slotNo >= 0 && slotNo <= 24){
+    if(slotNo >= 0 && slotNo <= 23){
       activeBtnX = slotNo * 40 + 160;
       rect(activeBtnX, 50, 40,40);
     }else if(slotNo >= 24 && slotNo <= 50){
-      activeBtnX = (slotNo-23) * 40 + 160;
+      activeBtnX = (slotNo-24) * 40 + 160;
       rect(activeBtnX, 10, 40,40);
     }
     
