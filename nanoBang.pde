@@ -39,7 +39,7 @@ void setup() {
 
   guiCanvas = createGraphics(960, 40, P3D);
   for (int i = 0; i < shaders.length; i++) {
-    shaders[i] = loadShader("shader/sketch" + i + ".glsl");
+    shaders[i] = loadShader("shader/sketch" + i + ".frag");
   }
 
   time = 123.111;
@@ -158,7 +158,7 @@ void activeBtnDraw(){
 
 void mousePressed(){
   if(mouseY >50 && mouseY < 90){
-    if(mouseX >160 && mouseX < 1160){
+    if(mouseX >160 && mouseX < 1120){
       slotSelect(floor((mouseX-160)/40));
       activeBtnX = floor(mouseX/40) * 40;
       activeBtnY = 50;
@@ -168,7 +168,7 @@ void mousePressed(){
 }
 void mouseDragged() {
   if(mouseY >50 && mouseY < 90){
-    if(mouseX >160 && mouseX < 1160){
+    if(mouseX >160 && mouseX < 1120){
       slotSelect(floor((mouseX-160)/40));
       activeBtnX = floor(mouseX/40) * 40;
       activeBtnY = 50;
