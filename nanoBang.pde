@@ -8,7 +8,7 @@ PGraphics guiCanvas;
 PImage bg;
 PImage gui;
 
-int shaderCount = 22; //slot数
+int shaderCount = 24; //slot数
 PShader[] shaders = new PShader[shaderCount];
 PImage[] thumbnails = new PImage[shaderCount];
 
@@ -29,7 +29,7 @@ int lastNote = 0;
 
 boolean previewMode = false;
 void setup() { 
-  size(1170,100, P3D);
+  size(1130,100, P3D);
   MidiBus.list();
   myBus = new MidiBus(this, 0, -1); 
   server = new SyphonServer(this, "Processing Syphon - nanoBang");

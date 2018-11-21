@@ -4,6 +4,7 @@ const float NEON_WIDTH = 50.0;
  
 void main()
 {
+  vec2 hoge = resolution;
   vec4 col = vec4(0, 0, 0, 0);
  
   //  正弦波（sin）を使って基準点を決める。
