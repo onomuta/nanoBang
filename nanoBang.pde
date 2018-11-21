@@ -8,7 +8,7 @@ PGraphics guiCanvas;
 PImage bg;
 PImage gui;
 
-int shaderCount = 24; //slot数
+int shaderCount = 25; //slot数
 PShader[] shaders = new PShader[shaderCount];
 PImage[] thumbnails = new PImage[shaderCount];
 
@@ -37,7 +37,7 @@ void setup() {
 
 
 
-  guiCanvas = createGraphics(960, 40, P3D);
+  guiCanvas = createGraphics(960, 80, P3D);
   for (int i = 0; i < shaders.length; i++) {
     shaders[i] = loadShader("shader/sketch" + i + ".frag");
   }
@@ -49,7 +49,11 @@ void setup() {
     shaders[i].set("resolution", float(40), float(40));
     guiCanvas.shader(shaders[i]);
 
-    guiCanvas.rect(i * 40, 0, 40, 40);
+    if( i < 24){
+      guiCanvas.rect(i * 40, 40, 40, 40);
+    }else if(i < 48){
+      guiCanvas.rect((i - 24) * 40, 0, 40, 40);
+    }
   }
   guiCanvas.endDraw();
 
@@ -65,7 +69,7 @@ void draw() {
 
   image(bg, 0, 0);
 
-  image(guiCanvas, 160,50, 960, 40);
+  image(guiCanvas, 160,10, 960, 80);
 
   activeBtnDraw();
 
@@ -164,6 +168,13 @@ void mousePressed(){
       activeBtnY = 50;
       drawFlag = 1;
     }
+  }else if(mouseY >10 && mouseY < 50){
+    if(mouseX >160 && mouseX < 1120){
+      slotSelect(floor((mouseX-160)/40) + 24);
+      activeBtnX = floor(mouseX/40) * 40;
+      activeBtnY = 10;
+      drawFlag = 1;
+    }
   }
 }
 void mouseDragged() {
@@ -172,6 +183,13 @@ void mouseDragged() {
       slotSelect(floor((mouseX-160)/40));
       activeBtnX = floor(mouseX/40) * 40;
       activeBtnY = 50;
+      drawFlag = 1;
+    }
+  }else if(mouseY >10 && mouseY < 50){
+    if(mouseX >160 && mouseX < 1120){
+      slotSelect(floor((mouseX-160)/40) + 24);
+      activeBtnX = floor(mouseX/40) * 40;
+      activeBtnY = 10;
       drawFlag = 1;
     }
   }
