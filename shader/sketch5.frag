@@ -7,7 +7,7 @@ uniform vec2 resolution;
 uniform vec2 mouse;
 uniform vec3 spectrum;
 
-const float PI = 3.141592;
+const float PI = 3.1415926535;
 
 void main(void)
 {
@@ -22,7 +22,7 @@ void main(void)
     vec2 dir2 = vec2(-dir1.y, dir1.x);
 
     float l = dot(dir1, coord);
-    float w = sin(seg * 31.374) * 18. + 20.;
+    float w = sin(seg * 33.374) * 1. + 13.;
     float prog = l / w + time * 2.;
     float idx = floor(prog);
 
@@ -32,12 +32,15 @@ void main(void)
     float thresh = mix(th1, th2, smoothstep(0.75, 1., fract(phase)));
 
     float l2 = dot(dir2, coord);
-    float slide = fract(idx * 32.74853) * 200. * time;
-    float w2 = fract(idx * 39.721784) * 500.;
+    float slide = fract(idx * 32.74853) * 100. * time;
+    float w2 = fract(idx * 39.721784) * 400.;
     float prog2 = (l2 + slide) / w2;
 
-    float c = clamp((fract(prog) - thresh) * w * 0.3, 0., 1.);
-    c *= clamp((fract(prog2) - 1. + thresh) * w2 * 0.3, 0., 1.);
+    float c1 = clamp((fract(prog) - thresh + 0.2) * w * 0.5, 0., 1.);
+    c1 *= clamp((fract(prog2) - 1. + thresh- 0.2) * w2 * 0.5, 0., 1.);
+    
+    float c2 = clamp((fract(prog) - thresh -0.2) * w * 0.5, 0., 1.);
+    c2 *= clamp((fract(prog2) - 1. + thresh +0.2) * w2 * 0.5, 0., 1.);
 
-    gl_FragColor = vec4(c, c, c, 1);
+    gl_FragColor = vec4(c1, c2, c2, 1);
 }

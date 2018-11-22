@@ -8,7 +8,7 @@ PGraphics guiCanvas;
 PImage bg;
 PImage gui;
 
-int shaderCount = 26; //slot数
+int shaderCount = 29; //slot数
 PShader[] shaders = new PShader[shaderCount];
 PImage[] thumbnails = new PImage[shaderCount];
 
@@ -35,17 +35,14 @@ void setup() {
   server = new SyphonServer(this, "Processing Syphon - nanoBang");
   bg = loadImage("bg.png");
 
-
-
   guiCanvas = createGraphics(960, 80, P3D);
   for (int i = 0; i < shaders.length; i++) {
     shaders[i] = loadShader("shader/sketch" + i + ".frag");
   }
 
-  time = 123.111;
   guiCanvas.beginDraw();
   for (int i = 0; i < shaders.length; i++) {
-    shaders[i].set("time", 10.4321);
+    shaders[i].set("time", 12.4321);
     shaders[i].set("resolution", float(40), float(40));
     guiCanvas.shader(shaders[i]);
 

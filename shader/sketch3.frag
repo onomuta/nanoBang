@@ -1,5 +1,9 @@
-uniform vec2 resolution;
+#ifdef GL_ES
+precision highp float;
+#endif
+
 uniform float time;
+uniform vec2 resolution;
 
 float rand(vec2 uv)
 {
@@ -16,7 +20,7 @@ vec2 uv2tri(vec2 uv)
 
 float tri(vec2 uv)
 {
-    float sp = 1.2 + 3.3 * rand(floor(uv2tri(uv)));
+    float sp = 1.2 + 20.3 * rand(floor(uv2tri(uv)));
     return max(0., sin(sp * time));
 }
 
@@ -24,11 +28,11 @@ void main(void)
 {
     vec2 uv = (gl_FragCoord.xy - resolution.xy / 2.) / resolution.y;
 
-    float t1 = -time / 0.5;
+    float t1 = -time / .5;
     float t2 = t1 + 0.5;
 
-    float c1 = tri(uv * (2. + 4. * fract(t1)) + floor(t1));
-    float c2 = tri(uv * (2. + 4. * fract(t2)) + floor(t2));
-
-    gl_FragColor = vec4(mix(c1, c2, abs(1. - 2. * fract(t1))));
+    float c1 = tri(uv * (2. + 8. * fract(t1)) + floor(t1));
+    float c2 = tri(uv * (2. + 8. * fract(t2)) + floor(t2));
+    
+    gl_FragColor = vec4(c1,c2,c2,1.0);
 }
