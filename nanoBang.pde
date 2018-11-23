@@ -8,7 +8,7 @@ PGraphics guiCanvas;
 PImage bg;
 PImage gui;
 
-int shaderCount = 31; //slot数
+int shaderCount = 32; //slot数
 PShader[] shaders = new PShader[shaderCount];
 PImage[] thumbnails = new PImage[shaderCount];
 
@@ -59,8 +59,7 @@ void setup() {
 }
 
 void draw() {
-  time =(float)frameCount/60.0;
-
+  time =( (float)frameCount/60.0 ) %9999;
   drawFrame = frameCount - startFrame;
   background(0);
 
