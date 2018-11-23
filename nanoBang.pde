@@ -8,7 +8,7 @@ PGraphics guiCanvas;
 PImage bg;
 PImage gui;
 
-int shaderCount = 29; //slot数
+int shaderCount = 31; //slot数
 PShader[] shaders = new PShader[shaderCount];
 PImage[] thumbnails = new PImage[shaderCount];
 
