@@ -40,7 +40,7 @@ void setup() {
 
   guiCanvas = createGraphics(960, 80, P3D);
   for (int i = 0; i < shaders.length; i++) {
-    shaders[i] = loadShader("shader/sketch" + i + ".frag");
+    shaders[i] = loadShader("data/shader/sketch" + i + ".frag");
   }
 
   guiCanvas.beginDraw();
