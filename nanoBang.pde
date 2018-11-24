@@ -8,11 +8,12 @@ PGraphics guiCanvas;
 PImage bg;
 PImage gui;
 
-int shaderCount = 32; //slot数
+int shaderCount = 33; //slot数
 PShader[] shaders = new PShader[shaderCount];
 PImage[] thumbnails = new PImage[shaderCount];
 
 float time = 0;  //  カウンター
+float speed = 1;
 
 boolean btn1 = false;  
 
@@ -29,7 +30,9 @@ int lastNote = 0;
 
 boolean previewMode = false;
 void setup() { 
-  size(1130,100, P3D);
+  size(1130,100,P3D);
+  
+  text("now loading..", 10, 10);
   MidiBus.list();
   myBus = new MidiBus(this, 0, -1); 
   server = new SyphonServer(this, "Processing Syphon - nanoBang");
@@ -58,9 +61,13 @@ void setup() {
   canvas = createGraphics(1280, 720, P3D);
 }
 
+float timeCount = 0;
 void draw() {
-  time =( (float)frameCount/60.0 ) %9999;
-  drawFrame = frameCount - startFrame;
+  time =( (float)frameCount/60.0) %999.;
+  // time =( (float)timeCount/60.0) %999.;
+  // timeCount += 1 * speed;
+
+  // drawFrame = frameCount - startFrame;
   background(0);
 
   image(bg, 0, 0);
@@ -99,7 +106,9 @@ void controllerChange(int channel, int number, int value) {
   println("Channel:"+channel);
   println("Number:"+number);
   println("Value:"+value);
-  
+  if(number == 15){
+    speed = 1. + (value/127.);
+  }
 }
 
 // note対応
