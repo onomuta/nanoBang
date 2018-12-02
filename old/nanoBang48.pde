@@ -29,15 +29,15 @@ int lastNote = 0;
 
 boolean previewMode = false;
 void setup() { 
-  size(1130,140,P3D);
+  size(1130,100,P3D);
   
   text("now loading..", 10, 10);
   MidiBus.list();
   myBus = new MidiBus(this, 0, -1); 
   server = new SyphonServer(this, "Processing Syphon - nanoBang");
-  bg = loadImage("bg72.png");
+  bg = loadImage("bg.png");
 
-  guiCanvas = createGraphics(960, 120, P3D);
+  guiCanvas = createGraphics(960, 80, P3D);
   for (int i = 0; i < shaders.length; i++) {
     shaders[i] = loadShader("data/shader/sketch" + i + ".frag");
   }
@@ -49,11 +49,9 @@ void setup() {
     guiCanvas.shader(shaders[i]);
 
     if( i < 24){
-      guiCanvas.rect(i * 40, 80, 40, 40);
+      guiCanvas.rect(i * 40, 40, 40, 40);
     }else if(i < 48){
-      guiCanvas.rect((i - 24) * 40, 40, 40, 40);
-    }else if(i < 72){
-      guiCanvas.rect((i - 48) * 40, 0, 40, 40);
+      guiCanvas.rect((i - 24) * 40, 0, 40, 40);
     }
   }
   guiCanvas.endDraw();
@@ -73,7 +71,7 @@ void draw() {
 
   image(bg, 0, 0);
 
-  image(guiCanvas, 160,10, 960, 120);
+  image(guiCanvas, 160,10, 960, 80);
 
   activeBtnDraw();
 
@@ -96,8 +94,7 @@ void draw() {
   // プレビュー描画
   image(canvas, 10,10, 142.222, 80);
 
-  fill(200);
-  text(frameRate, 10, 120);
+  text(frameRate, 10, 10);
 }
 
 
@@ -158,47 +155,48 @@ void activeBtnDraw(){
     stroke(255);
     if(slotNo >= 0 && slotNo <= 23){
       activeBtnX = slotNo * 40 + 160;
-      rect(activeBtnX, 90, 40,40);
-    }else if(slotNo >= 24 && slotNo <= 47){
-      activeBtnX = (slotNo-24) * 40 + 160;
       rect(activeBtnX, 50, 40,40);
-    }else if(slotNo >= 48 && slotNo <= 71){
-      activeBtnX = (slotNo-48) * 40 + 160;
+    }else if(slotNo >= 24 && slotNo <= 50){
+      activeBtnX = (slotNo-24) * 40 + 160;
       rect(activeBtnX, 10, 40,40);
     }
     
   }
 }
 
-void sdSelect(){
-  if(mouseY >90 && mouseY <= 130){
+void mousePressed(){
+  if(mouseY >50 && mouseY < 90){
     if(mouseX >160 && mouseX < 1120){
       slotSelect(floor((mouseX-160)/40));
       activeBtnX = floor(mouseX/40) * 40;
       activeBtnY = 50;
       drawFlag = 1;
     }
-  }else if(mouseY >50 && mouseY <= 90){
+  }else if(mouseY >10 && mouseY < 50){
     if(mouseX >160 && mouseX < 1120){
       slotSelect(floor((mouseX-160)/40) + 24);
-      activeBtnX = floor(mouseX/40) * 40;
-      activeBtnY = 50;
-      drawFlag = 1;
-    }
-  }else if(mouseY >10 && mouseY <= 50){
-    if(mouseX >160 && mouseX < 1120){
-      slotSelect(floor((mouseX-160)/40) + 48);
       activeBtnX = floor(mouseX/40) * 40;
       activeBtnY = 10;
       drawFlag = 1;
     }
   }
 }
-void mousePressed(){
-  sdSelect();
-}
 void mouseDragged() {
-  sdSelect();
+  if(mouseY >50 && mouseY < 90){
+    if(mouseX >160 && mouseX < 1120){
+      slotSelect(floor((mouseX-160)/40));
+      activeBtnX = floor(mouseX/40) * 40;
+      activeBtnY = 50;
+      drawFlag = 1;
+    }
+  }else if(mouseY >10 && mouseY < 50){
+    if(mouseX >160 && mouseX < 1120){
+      slotSelect(floor((mouseX-160)/40) + 24);
+      activeBtnX = floor(mouseX/40) * 40;
+      activeBtnY = 10;
+      drawFlag = 1;
+    }
+  }
 }
 
 void mouseReleased(){
