@@ -8,7 +8,7 @@ PGraphics guiCanvas;
 PImage bg;
 PImage gui;
 
-int shaderCount = 45; //slot数
+int shaderCount = 48; //slot数
 PShader[] shaders = new PShader[shaderCount];
 PImage[] thumbnails = new PImage[shaderCount];
 
@@ -24,7 +24,6 @@ int drawFrame = 0;
 
 int activeBtnX = 0;
 int activeBtnY = 0;
-
 
 int lastNote = 0;
 
@@ -46,7 +45,7 @@ void setup() {
   guiCanvas.beginDraw();
   for (int i = 0; i < shaders.length; i++) {
     shaders[i].set("time", 12.4321);
-    shaders[i].set("resolution", float(40), float(40));
+    // shaders[i].set("resolution", float(40), float(40));
     guiCanvas.shader(shaders[i]);
 
     if( i < 24){
@@ -106,9 +105,9 @@ void controllerChange(int channel, int number, int value) {
   println("Channel:"+channel);
   println("Number:"+number);
   println("Value:"+value);
-  if(number == 15){
-    speed = 1. + (value/127.);
-  }
+  // if(number == 15){
+  //   speed = 1. + (value/127.);
+  // }
 }
 
 // note対応
@@ -209,7 +208,7 @@ void mouseReleased(){
 // baseColor  : vec3  :基本色 HSL(1,1,1)
 void setShader(PShader sd){
   sd.set("time", time);
-  sd.set("resolution", float(canvas.width), float(canvas.height));
+  // sd.set("resolution", float(canvas.width), float(canvas.height));
 
   sd.set("backbuffer", canvas);
   canvas.shader(sd);
