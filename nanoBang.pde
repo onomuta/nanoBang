@@ -8,7 +8,7 @@ PGraphics guiCanvas;
 PImage bg;
 PImage gui;
 
-int shaderCount = 41; //slot数
+int shaderCount = 45; //slot数
 PShader[] shaders = new PShader[shaderCount];
 PImage[] thumbnails = new PImage[shaderCount];
 
@@ -210,5 +210,7 @@ void mouseReleased(){
 void setShader(PShader sd){
   sd.set("time", time);
   sd.set("resolution", float(canvas.width), float(canvas.height));
+
+  sd.set("backbuffer", canvas);
   canvas.shader(sd);
 }
