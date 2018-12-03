@@ -1,0 +1,4 @@
+https://thebookofshaders.com/
+https://github.com/keijiro/ShaderSketches
+https://github.com/tado/100fragments
+https://github.com/fand/webgl-study
