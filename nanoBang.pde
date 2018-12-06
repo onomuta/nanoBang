@@ -8,7 +8,7 @@ PGraphics guiCanvas;
 PImage bg;
 PImage gui;
 
-int shaderCount = 49; //slot数
+int shaderCount = 51; //slot数
 PShader[] shaders = new PShader[shaderCount];
 PImage[] thumbnails = new PImage[shaderCount];
 
@@ -29,6 +29,7 @@ int lastNote = 0;
 
 boolean previewMode = false;
 void setup() { 
+  // fullScreen(P3D);
   size(1130,140,P3D);
   
   text("now loading..", 10, 10);
