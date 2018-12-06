@@ -5,7 +5,7 @@
 https://youtu.be/ObgEPQEesIY
 
 
-##Reference list.
+## Reference list
 - https://thebookofshaders.com/
 - https://glslfan.com/
 - https://qiita.com/doxas/items/b8221e92a2bfdc6fc211
