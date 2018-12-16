@@ -1,5 +1,10 @@
 import themidibus.*;
 MidiBus myBus;
+MidiBus myBus1;
+MidiBus myBus2;
+MidiBus myBus3;
+MidiBus myBus4;
+MidiBus myBus5;
 import codeanticode.syphon.*;
 SyphonServer server;
 
@@ -25,7 +30,11 @@ int drawFrame = 0;
 int activeBtnX = 0;
 int activeBtnY = 0;
 
-int lastNote = 0;
+int lastNote = -1;
+int preNote = -1;
+int preNote2 = -1;
+
+
 
 boolean previewMode = false;
 void setup() { 
@@ -35,6 +44,11 @@ void setup() {
   text("now loading..", 10, 10);
   MidiBus.list();
   myBus = new MidiBus(this, 0, -1); 
+  myBus = new MidiBus(this, 1, -1); 
+  myBus = new MidiBus(this, 2, -1); 
+  myBus = new MidiBus(this, 3, -1); 
+  myBus = new MidiBus(this, 4, -1); 
+  myBus = new MidiBus(this, 5, -1); 
   server = new SyphonServer(this, "Processing Syphon - nanoBang");
   bg = loadImage("bg72.png");
 
@@ -99,6 +113,8 @@ void draw() {
 
   fill(200);
   text(frameRate, 10, 120);
+  
+  // println(pressNoteList);
 }
 
 
@@ -127,8 +143,14 @@ void noteOn(int channel, int pitch, int velocity) {
   // pitch:24 = C0
   slotSelect(pitch);
 
+  preNote2 = preNote;
+  preNote = lastNote;
   lastNote = pitch;
 }
+
+
+
+
 
 void noteOff(int channel, int pitch, int velocity) {
   // Receive a noteOff
@@ -139,9 +161,26 @@ void noteOff(int channel, int pitch, int velocity) {
   print("Pitch:"+pitch);
   println("Velocity:"+velocity);
 
-  if(lastNote == pitch){
-    drawFlag = 0;
+  if(pitch == preNote){
+    preNote = preNote2;
+  }if(pitch == preNote2){
+    preNote2 = -1;
+  }else if(pitch == lastNote){
+    if(preNote == -1){
+      if(preNote2 == -1){
+        drawFlag = 0;
+      }else{
+        lastNote = preNote2;
+        slotSelect(lastNote);
+        preNote2 = -1;
+      }
+    }else{
+      lastNote = preNote;
+      slotSelect(lastNote);
+      preNote = -1;
+    }
   }
+
 }
 
 void slotSelect(int n){
