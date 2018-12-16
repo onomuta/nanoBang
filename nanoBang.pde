@@ -146,10 +146,10 @@ void noteOn(int channel, int pitch, int velocity) {
   preNote2 = preNote;
   preNote = lastNote;
   lastNote = pitch;
+  println("p2;" + preNote2);
+  println("p;" + preNote);
+  println("l;" + lastNote);
 }
-
-
-
 
 
 void noteOff(int channel, int pitch, int velocity) {
@@ -163,12 +163,16 @@ void noteOff(int channel, int pitch, int velocity) {
 
   if(pitch == preNote){
     preNote = preNote2;
+    preNote2 = -1;
   }if(pitch == preNote2){
     preNote2 = -1;
   }else if(pitch == lastNote){
     if(preNote == -1){
       if(preNote2 == -1){
         drawFlag = 0;
+        preNote2 = -1;
+        preNote = -1;
+        lastNote = -1;
       }else{
         lastNote = preNote2;
         slotSelect(lastNote);
@@ -176,11 +180,16 @@ void noteOff(int channel, int pitch, int velocity) {
       }
     }else{
       lastNote = preNote;
+      preNote = preNote2;
+      preNote2 = -1;
       slotSelect(lastNote);
-      preNote = -1;
+      
     }
   }
 
+  println("p2;" + preNote2);
+  println("p;" + preNote);
+  println("l;" + lastNote);
 }
 
 void slotSelect(int n){
